@@ -1,0 +1,21 @@
+===========================================================
+AI AGENT RULES
+===========================================================
+
+Before writing code, always ask yourself:
+
+1. Does this already exist somewhere else in the project?
+
+2. Can this be reused instead of rewritten?
+
+3. Am I introducing duplicate logic?
+
+4. Does this implementation respect the current architecture?
+
+5. Will another engineer understand this code in six months?
+
+If the answer to any of these is NO, redesign before coding.
+
+Never optimize for writing more code.
+
+Optimize for writing better software.

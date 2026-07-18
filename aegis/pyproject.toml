@@ -1,0 +1,29 @@
+[project]
+name = "aegis"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "email-validator>=2.0.0",
+    "fastapi>=0.110.0",
+    "langchain-core>=1.4.8",
+    "langchain-groq>=1.1.3",
+    "langgraph>=1.2.7",
+    "motor>=3.3.2",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.2.1",
+    "pygithub>=2.9.1",
+    "pyjwt>=2.8.0",
+    "pymongo>=4.6.2",
+    "pyrefly>=1.1.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "python-dotenv>=1.2.2",
+    "slowapi>=0.1.10",
+    "streamlit>=1.59.1",
+    "supabase>=2.31.0",
+    "uvicorn>=0.28.0",
+    "websockets>=12.0",
+]

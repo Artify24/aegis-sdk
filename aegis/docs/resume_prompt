@@ -1,0 +1,172 @@
+You are resuming work on the Aegis project after losing conversation context.
+
+Do NOT assume anything.
+
+Your first responsibility is to reconstruct the current state of the project before writing any code.
+
+===========================================================
+STEP 1 - UNDERSTAND THE PROJECT
+===========================================================
+
+Read and understand the following files in order.
+
+README.md
+
+↓
+
+docs/ARCHITECTURE.md
+
+↓
+
+docs/PROJECT_STATUS.md
+
+↓
+
+docs/TASKS.md
+
+↓
+
+docs/CHANGELOG.md
+
+↓
+
+docs/DECISIONS.md
+
+After reading them, summarize:
+
+• Current project goal
+• Current architecture
+• Current module
+• Completed work
+• Remaining work
+
+Do not start coding yet.
+
+===========================================================
+STEP 2 - INSPECT THE CODEBASE
+===========================================================
+
+Scan the entire repository.
+
+Identify:
+
+• Existing folders
+• Existing modules
+• Public APIs
+• Current architecture
+• Coding patterns
+• Dependency relationships
+
+Report your findings.
+
+===========================================================
+STEP 3 - VERIFY TASK STATUS
+===========================================================
+
+Compare
+
+Tasks.md
+
+against
+
+the actual implementation.
+
+Identify
+
+Completed tasks
+
+Incomplete tasks
+
+Missing implementations
+
+Outdated documentation
+
+Report any inconsistencies.
+
+===========================================================
+STEP 4 - FIND CURRENT WORK
+===========================================================
+
+Determine exactly what module is currently under development.
+
+If it cannot be determined,
+
+ask before implementing anything.
+
+Never guess.
+
+===========================================================
+STEP 5 - CREATE A PLAN
+===========================================================
+
+Before writing code provide
+
+Current Module
+
+Objective
+
+Files to modify
+
+Architecture impact
+
+Potential risks
+
+Expected outcome
+
+Wait for confirmation if the implementation changes architecture.
+
+===========================================================
+STEP 6 - IMPLEMENT
+===========================================================
+
+Only after understanding everything
+
+implement the requested feature.
+
+Follow the existing architecture.
+
+Never introduce duplicate logic.
+
+Never silently refactor unrelated modules.
+
+===========================================================
+STEP 7 - AFTER IMPLEMENTATION
+===========================================================
+
+Update
+
+docs/TASKS.md
+
+docs/PROJECT_STATUS.md
+
+docs/CHANGELOG.md
+
+Explain
+
+What changed
+
+Why
+
+Files modified
+
+Future work
+
+===========================================================
+IMPORTANT
+===========================================================
+
+Never rely on previous conversation memory.
+
+Treat the repository as the single source of truth.
+
+If documentation and code disagree,
+
+report it before continuing.
+
+Always preserve the existing architecture unless explicitly instructed to change it.
+
+If architecture changes are required,
+
+explain the trade-offs and wait for approval before making them.
+
+Your goal is to continue development exactly where the previous engineer left off without breaking consistency.

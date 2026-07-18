@@ -1,0 +1,497 @@
+Layer 1 – Request Intelligence (Modified)
+Mission
+
+Layer 1 is responsible for understanding and governing the user's request before any planning occurs.
+
+It answers one question:
+
+"What is the user trying to do, and what execution boundaries should the rest of the system obey?"
+
+Layer 1 does not execute tools, does not generate plans, and does not make runtime decisions.
+
+Its output is a structured Layer1Context that defines the request's intent, capabilities, risk profile, and execution boundaries. This context is consumed by both the Planner and Layer 2.
+
+Architecture
+User Request
+      │
+      ▼
+ExecutionContext
+      │
+      ▼
+══════════════════════════════════════════════
+Layer 1 : Request Intelligence
+══════════════════════════════════════════════
+
+Request Analyzer
+      │
+      ▼
+Intent Classification
+      │
+      ▼
+Capability Detection
+      │
+      ▼
+Memory Validation
+      │
+      ▼
+Risk Assessment
+      │
+      ▼
+Policy Alignment
+      │
+      ▼
+Layer1Context
+Responsibilities
+Request Analysis
+
+Determine:
+
+user objective
+domain
+request type
+ambiguity
+complexity
+
+Produces
+
+RequestProfile
+Intent Classification
+
+Examples
+
+information_retrieval
+
+summarization
+
+reasoning
+
+content_generation
+
+code_generation
+
+database_query
+
+email
+
+search
+
+analysis
+
+tool_execution
+Capability Detection
+
+Determine exactly which capabilities are required.
+
+Example
+
+search
+
+calculator
+
+filesystem.read
+
+database.read
+
+web.search
+
+Layer 1 must aggressively prune unnecessary capabilities.
+
+Memory Validation
+
+Responsibilities
+
+validate requested memories
+verify scopes
+resolve conflicts
+apply memory policies
+
+Produces
+
+ValidatedMemory
+Risk Assessment
+
+Assign
+
+LOW
+
+MEDIUM
+
+HIGH
+
+CRITICAL
+
+Factors
+
+destructive actions
+PII
+financial
+medical
+external systems
+Policy Alignment
+
+Evaluate
+
+organization policies
+developer policies
+user policies
+compliance rules
+
+Produces
+
+PolicyDecision
+Output
+
+Layer 1 produces
+
+Layer1Context
+
+intent
+
+capabilities
+
+allowed_tools
+
+risk_level
+
+validated_memory
+
+policy_decision
+
+request_profile
+
+Nothing else.
+
+Layer 1 Rules
+
+Layer 1 must NEVER
+
+❌ execute tools
+
+❌ call Runtime
+
+❌ verify permissions
+
+❌ authorize execution
+
+❌ perform retries
+
+❌ generate execution plans
+
+❌ monitor execution
+
+Those belong to Layer 2 and Runtime.
+
+Layer 2 – Execution Governance (Modified)
+Mission
+
+Layer 2 governs execution, not requests.
+
+It answers one question:
+
+"Should this specific action proposed by the Planner be executed?"
+
+The Planner is considered untrusted.
+
+Every proposed action must pass Layer 2 before Runtime may execute it.
+
+Architecture
+Planner
+      │
+Tool Call
+      │
+      ▼
+ProposedAction
+      │
+      ▼
+══════════════════════════════════════════════
+Layer 2 : Execution Governance
+══════════════════════════════════════════════
+
+Identity Validator
+      │
+Permission Validator
+      │
+Tool Authorization Validator
+      │
+Constraint Validator
+      │
+Decision Verification Validator
+      │
+Behavior Validator
+      │
+      ▼
+GovernanceResult
+Responsibilities
+Identity Verification
+
+Validate
+
+JWT
+OAuth
+Session
+API Keys
+Agent Identity
+Permission Validation
+
+Check RBAC
+
+User
+
+↓
+
+Roles
+
+↓
+
+Capabilities
+
+↓
+
+Requested Tool
+Tool Authorization
+
+Consult Tool Registry
+
+Verify
+
+exists
+enabled
+permitted
+Layer 1 allowed
+version
+risk
+Constraint Generation
+
+Produce structured constraints
+
+Examples
+
+ReadOnly
+
+Timeout=30s
+
+MaxRows=100
+
+MaxFiles=5
+
+BudgetLimit
+
+RateLimit
+
+Never strings.
+
+Always objects.
+
+Decision Verification
+
+Prevent Planner Drift.
+
+Example
+
+Layer 1
+
+information_retrieval
+
+Planner
+
+delete_database()
+
+Reject immediately.
+
+Semantic verification is optional and only used when deterministic rules cannot confidently classify the action.
+
+Behavior Monitoring
+
+Maintain execution state.
+
+Track
+
+loops
+retries
+recursion
+repeated failures
+tool frequency
+escalation
+rate limits
+Layer 2 Output
+GovernanceResult
+
+approved
+
+approved_action
+
+constraints
+
+violations
+
+audit_event
+
+failed_validator
+
+failure_reason
+Layer 2 Rules
+
+Layer 2 must NEVER
+
+❌ plan
+
+❌ call LLMs for every validator
+
+❌ execute tools
+
+❌ rewrite planner output
+
+❌ access Runtime directly
+
+Layer 2 only validates.
+
+Runtime Modification
+
+Runtime becomes an execution engine.
+
+Nothing more.
+
+Responsibilities
+
+Tool Registry
+
+↓
+
+Executor
+
+↓
+
+Retry Manager
+
+↓
+
+Timeout Manager
+
+↓
+
+Streaming
+
+↓
+
+Result Normalization
+
+Runtime must NEVER
+
+❌ verify permissions
+
+❌ analyze intent
+
+❌ classify requests
+
+❌ evaluate policies
+
+New Execution Flow
+                     User
+                      │
+                      ▼
+              Aegis.invoke()
+                      │
+                      ▼
+              ExecutionContext
+                      │
+                      ▼
+══════════════════════════════════════════════
+Layer 1 : Request Intelligence
+══════════════════════════════════════════════
+
+Request Analysis
+      │
+Intent Classification
+      │
+Capability Detection
+      │
+Memory Validation
+      │
+Risk Assessment
+      │
+Policy Alignment
+      │
+      ▼
+Layer1Context
+      │
+      ▼
+══════════════════════════════════════════════
+Planner (Untrusted LLM)
+══════════════════════════════════════════════
+      │
+Tool Call
+      │
+      ▼
+ProposedAction
+      │
+      ▼
+══════════════════════════════════════════════
+Layer 2 : Execution Governance
+══════════════════════════════════════════════
+
+Identity
+      │
+Permission
+      │
+Tool Authorization
+      │
+Constraint Generation
+      │
+Decision Verification
+      │
+Behavior Validation
+      │
+      ▼
+GovernanceResult
+      │
+ ┌────┴─────┐
+ │          │
+ │Approved  │Rejected
+ │          │
+ ▼          ▼
+Runtime   Kill Switch
+ │          │
+ ▼          ▼
+Execute   Audit Event
+ │
+ ▼
+Tool
+ │
+ ▼
+Planner
+ │
+ ▼
+Final Response
+Trust Boundaries
+User
+    │
+Trusted
+    ▼
+Layer 1
+(Request Intelligence)
+    │
+Trusted
+    ▼
+Planner
+(Untrusted)
+    │
+Untrusted Proposal
+    ▼
+Layer 2
+(Execution Governance)
+    │
+Trusted Decision
+    ▼
+Runtime
+(Execution Only)
+    │
+    ▼
+Tools
+Aegis Design Principles (v2)
+Layer 1 understands the request and defines execution boundaries.
+Planner generates proposed actions but is never trusted to execute them.
+Layer 2 deterministically validates every proposed action against identity, permissions, policies, constraints, and behavioral rules.
+Runtime executes only actions explicitly approved by Layer 2.
+Each layer has a single responsibility and must never assume the responsibilities of another layer.
+All governance is performed before execution; all execution is performed after governance.
+The trust boundary between the Planner and Runtime is enforced exclusively by Layer 2, making it the sole gateway for tool execution.
