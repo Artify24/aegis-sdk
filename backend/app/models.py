@@ -87,6 +87,10 @@ class ProjectCreate(BaseModel):
     sdk_version: Optional[str] = "1.0.0"
     environment: Optional[str] = "development"
 
+class ProjectCreateResponse(BaseModel):
+    project: Project
+    default_api_key: str
+
 class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None

@@ -1,0 +1,8 @@
+{
+  "name": "Aegis Cloud",
+  "description": "Enterprise AI Runtime Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

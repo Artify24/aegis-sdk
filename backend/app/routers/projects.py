@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.models import Project, ProjectCreate, ProjectUpdate
+from app.models import Project, ProjectCreate, ProjectUpdate, ProjectCreateResponse
 from app.database import get_database
 from app.services.auth_service import get_current_user
+from app.services.api_key_service import generate_api_key, hash_api_key
 from datetime import datetime, timezone
 import uuid
 
@@ -22,7 +23,7 @@ async def list_projects(workspace_id: str, user: dict = Depends(get_current_user
         projects.append(Project(**doc))
     return projects
 
-@router.post("", response_model=Project, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ProjectCreateResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(project_in: ProjectCreate, user: dict = Depends(get_current_user)):
     db = get_database()
     
@@ -47,8 +48,33 @@ async def create_project(project_in: ProjectCreate, user: dict = Depends(get_cur
         "created_at": datetime.now(timezone.utc)
     }
     
+    # Generate default API key
+    raw_key = generate_api_key()
+    key_hash = hash_api_key(raw_key)
+    key_id = str(uuid.uuid4())
+    
+    key_doc = {
+        "_id": key_id,
+        "key_id": key_id,
+        "project_id": project_id,
+        "workspace_id": project_in.workspace_id,
+        "name": "Default API Key",
+        "key_prefix": raw_key[:10],
+        "key_hash": key_hash,
+        "is_active": True,
+        "created_at": datetime.now(timezone.utc),
+        "expires_at": None,
+        "last_used_at": None,
+        "created_by": user["user_id"]
+    }
+    
     await db.projects.insert_one(project_doc)
-    return Project(**project_doc)
+    await db.api_keys.insert_one(key_doc)
+    
+    return ProjectCreateResponse(
+        project=Project(**project_doc),
+        default_api_key=raw_key
+    )
 
 @router.get("/{id}", response_model=Project)
 async def get_project(id: str, user: dict = Depends(get_current_user)):
